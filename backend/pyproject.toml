@@ -1,0 +1,22 @@
+[project]
+name = "story-generator-backend"
+version = "0.1.0"
+description = "Backend for the language-learning story generator"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.32",
+    "sqlalchemy>=2.0",
+    "psycopg[binary]>=3.2",
+    "alembic>=1.13",
+]
+
+[dependency-groups]
+dev = [
+    "httpx>=0.28",
+    "pytest>=8",
+]
+
+# This is an application, not a library — don't try to build/install it as a package.
+[tool.uv]
+package = false

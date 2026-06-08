@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.python-version
+
+# Env / secrets
+.env
+
+# uv: commit uv.lock (when present), never the venv
+
+# OS / editors
+.DS_Store
+.idea/
+.vscode/
+
+# Node / frontend (added later)
+node_modules/
+.next/
