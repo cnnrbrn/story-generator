@@ -20,7 +20,7 @@ come - eats. La montaña come a los hombres. The mountain eats the men.
 
 Now, the story
 La Montaña que Come a los Hombres
-En Bolivia había una montaña, Cerro Rico, la montaña que come a los hombres.
+En 1545, había una montaña en Bolivia, Cerro Rico, la montaña que come a los hombres.
 Había mucha plata en la montaña. Y había muchos cuerpos dentro de la montaña.
 En España había una gran codicia por la plata.
 Había miles de mineros en la montaña y había muchos peligros para ellos.

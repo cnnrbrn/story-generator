@@ -49,6 +49,13 @@ def _build_user_prompt(
     return "\n".join(parts)
 
 
+def brief_prompts(
+    topic: str, sources: list[BriefSourceInput], pasted_text: str = ""
+) -> tuple[str, str]:
+    """Return the exact (system_prompt, user_prompt) used for brief generation."""
+    return _SYSTEM_PROMPT, _build_user_prompt(topic, sources, pasted_text)
+
+
 def generate_brief(
     topic: str,
     sources: list[BriefSourceInput],

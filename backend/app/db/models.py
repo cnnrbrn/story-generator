@@ -46,6 +46,9 @@ class Story(Base):
     # The shared narrative brief + per-level scope (StoryBrief), as JSON.
     # Nullable until the brief has been generated.
     brief: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
+    # The exact prompt ({system, user}) last sent to generate the brief, kept so
+    # the UI can show it on reopen. Nullable until the brief has been generated.
+    brief_prompt: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
     # Who created it (no auth yet, so nullable for now).
     created_by: Mapped[str | None] = mapped_column(String(255), nullable=True)
     # Timestamps filled in by the database itself.

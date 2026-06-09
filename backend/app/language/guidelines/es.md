@@ -67,9 +67,18 @@ At Advanced level there is only the title in Spanish and the story in Spanish, n
 
 - At Just Starting and Beginner level, keep sentence structures simple and controlled.
 - Try to repeat verbs so the user hears them more often.
+- **Just Starting must use exactly 3 verbs, and each verb must keep ONE conjugated form for the whole story.** Different conjugations of the same verb count as separate verbs (`tenía` and `tiene` are two verbs; `lucharon` and `luchó` are two verbs), so do not mix them. To make this easy, **write the entire Just Starting story in a single past tense** (the imperfect works well: `había`, `tenía`, `era`, `estaba`). Describe the situation simply; do NOT narrate a sequence across different time periods and do NOT switch to the present tense (never `ahora Bolivia no tiene...`). A flat, single-tense description like the example is the goal, not a before/now contrast.
 - At intermediate and advanced level, join short sentences together using conjunctions like `y`, `pero`, `porque`, `ni`, `que`.
 - Short jarringly simple sentences are only appropriate for Just Starting and Beginner.
 - The intermediate and advanced stories can use joining phrases like `sin embargo`, `por lo tanto`, `porque`, `de repente`, `a pesar de`, etc.
+
+## Clarity for absolute beginners (Just Starting and Beginner)
+
+- The opening sentence must state the essentials in ONE clear, complete sentence and, when the date is known, it MUST begin with the year: start with `En <año>,` then the main people or countries, what happened, and where. For a war between countries, open exactly like `En 1879, tres países, Chile, Perú y Bolivia, lucharon en el desierto.` (English: "In 1879, three countries, Chile, Peru and Bolivia, fought in the desert.")
+- Do NOT scatter those facts across short telegraphic fragments. For example, do NOT write `Tres países. Chile, Perú y Bolivia. Había un desierto.` — combine them into one flowing simple sentence. And never open with an abstract image like `Había un mineral blanco en el desierto`.
+- Keep sentences simple, but prefer complete, flowing sentences over one-fact-per-line. Do not lean on `había` for nearly every sentence.
+- Never introduce a name, group or term the listener has no context for. Every person or group mentioned must first be introduced in plain words. Do not drop a reference like `Familias aymaras` with no setup — a beginner cannot make sense of it.
+- Be concrete and literal; save metaphor for higher levels. The anti-imperialist angle and emotion must come through ordinary, clear sentences a beginner understands, never cryptic fragments.
 
 ## Audio and punctuation rule
 

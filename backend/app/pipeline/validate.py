@@ -46,11 +46,28 @@ def _check_story_verb_diversity(
     # grammar tracks every verb in the story; count distinct conjugated forms.
     distinct_forms = {g.surface_form for g in level.grammar}
     if len(distinct_forms) > rule.verb_section_max:
-        issues.append(
-            f"Story uses {len(distinct_forms)} distinct verbs, but {rule.label_en} "
-            f"allows at most {rule.verb_section_max} (every story verb must appear in "
-            "the verbs section)."
+        # Group forms by lemma to call out same-verb-different-conjugation duplicates
+        # (e.g. "lucharon" and "luchó"), which is the usual cause of going over.
+        by_lemma: dict[str, set[str]] = {}
+        for g in level.grammar:
+            by_lemma.setdefault(g.lemma, set()).add(g.surface_form)
+        dupes = {lemma: forms for lemma, forms in by_lemma.items() if len(forms) > 1}
+
+        msg = (
+            f"Story uses {len(distinct_forms)} distinct verb forms "
+            f"({', '.join(sorted(distinct_forms))}), but {rule.label_en} allows at "
+            f"most {rule.verb_section_max}. Different conjugations of the same verb "
+            "count separately."
         )
+        if dupes:
+            dupe_str = "; ".join(
+                f"{lemma} → {', '.join(sorted(forms))}" for lemma, forms in dupes.items()
+            )
+            msg += (
+                " These are multiple forms of ONE verb — rewrite so each verb uses a "
+                f"single conjugation throughout: {dupe_str}."
+            )
+        issues.append(msg)
 
 
 def _check_verb_count(level: StoryLevelOutput, rule: LevelRule, issues: list[str]) -> None:

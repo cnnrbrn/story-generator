@@ -26,17 +26,24 @@ def generate_validated_level(
     level_key: str,
     topic: str,
     model: str | None = None,
-    max_attempts: int = 3,
+    max_attempts: int = 5,
+    context: str | None = None,
 ) -> GenerationResult:
-    """Generate one level, then repair until it validates or attempts run out."""
+    """Generate one level, then repair until it validates or attempts run out.
+
+    `context` (brief + sources + prior saved levels) is passed through to both the
+    initial generation and every repair so the model stays grounded and consistent.
+    """
     rule = profile.level(level_key)
 
-    level = generate_level(profile, level_key, topic, model=model)
+    level = generate_level(profile, level_key, topic, model=model, context=context)
     issues = validate_level(level, rule)
     attempts = 1
 
     while issues and attempts < max_attempts:
-        level = repair_level(profile, level_key, topic, level, issues, model=model)
+        level = repair_level(
+            profile, level_key, topic, level, issues, model=model, context=context
+        )
         issues = validate_level(level, rule)
         attempts += 1
 

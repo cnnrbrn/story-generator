@@ -25,9 +25,11 @@ class Settings(BaseSettings):
     # LLM provider keys (optional until we wire up generation).
     openai_api_key: str | None = None
     deepseek_api_key: str | None = None
+    anthropic_api_key: str | None = None  # for Claude models
     tavily_api_key: str | None = None  # web search for the researcher
 
     # Default model for the generator (the repair step reuses the same model).
+    # Claude models (claude-*) route to Anthropic; deepseek-* route to DeepSeek.
     # deepseek-v4-flash = cheapest; deepseek-v4-pro = better quality, still cheap.
     generator_model: str = "deepseek-v4-pro"
 
