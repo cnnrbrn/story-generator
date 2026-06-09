@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { postResearch, type SourceItem } from "@/lib/research";
+import { createStory } from "@/lib/stories";
 
 export const Route = createFileRoute("/")({
   // The searched topic is kept in the URL (?topic=…) so a reload restores it.
@@ -37,6 +38,14 @@ function Research() {
 
   const sources = research.data?.sources ?? [];
 
+  // Creating the draft Story (persists topic + selected sources + pasted text),
+  // then navigate to its page where the brief gets generated.
+  const create = useMutation({
+    mutationFn: createStory,
+    onSuccess: ({ id }) =>
+      navigate({ to: "/stories/$storyId", params: { storyId: String(id) } }),
+  });
+
   function toggle(url: string) {
     setSelected((prev) => {
       const next = new Set(prev);
@@ -55,13 +64,11 @@ function Research() {
   }
 
   function onStartBrief() {
-    // Phase 2/3 will POST these to create a draft Story + generate the brief.
-    const payload = {
-      topic: topic.trim(),
+    create.mutate({
+      topic: submittedTopic,
       sources: sources.filter((s) => selected.has(s.url)),
       pasted_text: pasted.trim(),
-    };
-    console.log("start brief (stub):", payload);
+    });
   }
 
   const canStart = selected.size > 0 || pasted.trim().length > 0;
@@ -141,13 +148,18 @@ function Research() {
             />
           </div>
 
-          <div className="mt-6 flex justify-end">
+          <div className="mt-6 flex flex-col items-end gap-2">
+            {create.isError && (
+              <p className="text-sm text-destructive">
+                {(create.error as Error).message}
+              </p>
+            )}
             <Button
               onClick={onStartBrief}
-              disabled={!canStart}
+              disabled={!canStart || create.isPending}
               className="h-11 text-base"
             >
-              Start brief
+              {create.isPending ? "Starting…" : "Start brief"}
             </Button>
           </div>
         </>

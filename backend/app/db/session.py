@@ -18,3 +18,15 @@ SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
 # Parent class for our table models.
 class Base(DeclarativeBase):
     pass
+
+
+def get_db():
+    """FastAPI dependency: yields a session and always closes it after the request.
+
+    Used as `db: Session = Depends(get_db)` in route handlers.
+    """
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()

@@ -43,6 +43,9 @@ class Story(Base):
     # Chosen models per role, stored as JSON. Nullable until generation is configured.
     # (Named model_settings, not model_config — Pydantic reserves "model_config".)
     model_settings: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
+    # The shared narrative brief + per-level scope (StoryBrief), as JSON.
+    # Nullable until the brief has been generated.
+    brief: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
     # Who created it (no auth yet, so nullable for now).
     created_by: Mapped[str | None] = mapped_column(String(255), nullable=True)
     # Timestamps filled in by the database itself.
