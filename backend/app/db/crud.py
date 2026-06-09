@@ -59,6 +59,14 @@ def get_story(db: Session, story_id: int) -> Story | None:
     return db.get(Story, story_id)
 
 
+def save_brief(db: Session, story: Story, brief: dict) -> Story:
+    """Store (or overwrite) the brief JSON on a story."""
+    story.brief = brief
+    db.commit()
+    db.refresh(story)
+    return story
+
+
 def get_sources(db: Session, story_id: int) -> list[Source]:
     """All sources for a story, oldest first."""
     return list(

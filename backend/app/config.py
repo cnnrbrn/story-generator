@@ -34,6 +34,11 @@ class Settings(BaseSettings):
     # Max sources returned by a research call (ranked by Tavily relevance, then capped).
     research_max_results: int = 12
 
+    # Per-source character budget when extracting full page text for the brief.
+    # Keeps several long articles from blowing the model's context window
+    # (~4 chars/token, so 12000 ≈ 3000 tokens per source).
+    extract_char_budget: int = 12000
+
     # Background worker (used later).
     redis_url: str | None = None
 

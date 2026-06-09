@@ -4,8 +4,11 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
+from app.agents.brief import generate_brief
 from app.db import crud
 from app.db.session import get_db
+from app.pipeline.extract import extract_sources
+from app.schemas.brief import BriefSourceInput, StoryBrief
 from app.schemas.source import SourceItem
 
 router = APIRouter(prefix="/api", tags=["stories"])
@@ -76,3 +79,45 @@ def get_story(story_id: int, db: Session = Depends(get_db)) -> StoryDetail:
             for s in sources
         ],
     )
+
+
+@router.post("/stories/{story_id}/brief", response_model=StoryBrief)
+def create_brief(story_id: int, db: Session = Depends(get_db)) -> StoryBrief:
+    """Extract the selected sources' full text and synthesize a brief; persist it."""
+    story = crud.get_story(db, story_id)
+    if story is None:
+        raise HTTPException(status_code=404, detail="Story not found")
+
+    sources = crud.get_sources(db, story_id)
+
+    # Web sources get their full page text via Tavily Extract (snippet as fallback);
+    # the single "manual" source is the creator's pasted content.
+    web = [s for s in sources if s.type == "web" and s.url]
+    extracted = extract_sources([s.url for s in web])  # type: ignore[arg-type]
+    brief_sources = [
+        BriefSourceInput(
+            title=s.title or "",
+            url=s.url or "",
+            content=extracted.get(s.url or "") or (s.citation_text or ""),
+        )
+        for s in web
+    ]
+    pasted_text = "\n\n".join(
+        s.citation_text or "" for s in sources if s.type == "manual"
+    )
+
+    brief = generate_brief(story.topic_text, brief_sources, pasted_text)
+    crud.save_brief(db, story, brief.model_dump())
+    return brief
+
+
+@router.put("/stories/{story_id}/brief", response_model=StoryBrief)
+def update_brief(
+    story_id: int, brief: StoryBrief, db: Session = Depends(get_db)
+) -> StoryBrief:
+    """Save the creator's edited brief."""
+    story = crud.get_story(db, story_id)
+    if story is None:
+        raise HTTPException(status_code=404, detail="Story not found")
+    crud.save_brief(db, story, brief.model_dump())
+    return brief

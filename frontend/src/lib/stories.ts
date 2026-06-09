@@ -18,12 +18,27 @@ export interface SourceOut {
   citation_text: string | null;
 }
 
+// Mirrors backend app/schemas/brief.py
+export interface LevelScopes {
+  just_starting: string;
+  beginner: string;
+  intermediate: string;
+  advanced: string;
+}
+
+export interface StoryBrief {
+  overview: string;
+  angle: string;
+  spine: string;
+  levels: LevelScopes;
+}
+
 export interface StoryDetail {
   id: number;
   topic_text: string;
   language_code: string;
   status: string;
-  brief: Record<string, unknown> | null;
+  brief: StoryBrief | null;
   sources: SourceOut[];
 }
 
@@ -36,4 +51,17 @@ export function createStory(body: CreateStoryRequest): Promise<{ id: number }> {
 
 export function getStory(id: number): Promise<StoryDetail> {
   return apiFetch<StoryDetail>(`/api/stories/${id}`);
+}
+
+// Generate the brief from the story's saved sources (extract + LLM). Slow (~30-60s).
+export function generateBrief(id: number): Promise<StoryBrief> {
+  return apiFetch<StoryBrief>(`/api/stories/${id}/brief`, { method: "POST" });
+}
+
+// Save the creator's edited brief.
+export function updateBrief(id: number, brief: StoryBrief): Promise<StoryBrief> {
+  return apiFetch<StoryBrief>(`/api/stories/${id}/brief`, {
+    method: "PUT",
+    body: JSON.stringify(brief),
+  });
 }
