@@ -1,0 +1,20 @@
+# Dev overrides — auto-merged by `docker compose up` (no -f needed).
+# Builds the dev image, bind-mounts the source for live reload, adds Adminer.
+services:
+  api:
+    build:
+      target: dev
+    # Mount only app/ — not the whole backend/ — so the image's /app/.venv
+    # (built by uv) isn't shadowed by the host. Edits to app/ trigger --reload.
+    volumes:
+      - ./backend/app:/app/app
+    command:
+      ["uv", "run", "uvicorn", "app.main:app",
+       "--host", "0.0.0.0", "--port", "8000", "--reload"]
+
+  adminer:
+    image: adminer:latest
+    ports:
+      - "8081:8080"   # browse the DB at http://localhost:8081 (server: db, user/pass/db: storygen)
+    depends_on:
+      - db

@@ -1,17 +1,11 @@
-import os
-
 from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
-# Where to find the database.
-# Default = the local dev DB that docker-compose publishes on the host at port 5433.
-# Inside Docker, the `api` container overrides this with DATABASE_URL pointing at the
-# internal `db` service (db:5432). Format:
-#   postgresql+psycopg://<user>:<password>@<host>:<port>/<database>
-DATABASE_URL = os.getenv(
-    "DATABASE_URL",
-    "postgresql+psycopg://storygen:storygen@localhost:5433/storygen",
-)
+from app.config import settings
+
+# The database address comes from settings (env var DATABASE_URL, else the local-dev
+# default). Inside Docker the `api` container sets DATABASE_URL to reach the db service.
+DATABASE_URL = settings.database_url
 
 # The engine owns the pool of connections to Postgres. Create it once, reuse everywhere.
 # pool_pre_ping checks a connection is still alive before handing it out (avoids stale ones).
@@ -21,6 +15,6 @@ engine = create_engine(DATABASE_URL, pool_pre_ping=True)
 SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
 
 
-# Parent class for our table models (used starting in the next step).
+# Parent class for our table models.
 class Base(DeclarativeBase):
     pass

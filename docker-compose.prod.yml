@@ -1,0 +1,8 @@
+# Prod overrides — used explicitly, which also skips docker-compose.override.yml:
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+# No bind-mount, no reload, no Adminer; restarts on failure.
+services:
+  api:
+    build:
+      target: prod
+    restart: unless-stopped

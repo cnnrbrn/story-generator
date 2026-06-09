@@ -1,0 +1,9 @@
+# Keep the build context small and avoid shipping host-only artifacts.
+.venv
+__pycache__
+**/__pycache__
+*.pyc
+.pytest_cache
+.ruff_cache
+.mypy_cache
+.env

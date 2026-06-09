@@ -1,3 +1,8 @@
+# Base stack (shared by dev and prod).
+#   dev :  docker compose up --build
+#          (auto-merges docker-compose.override.yml — bind-mount + reload + Adminer)
+#   prod:  docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+#          (the explicit -f list skips the override file)
 services:
   db:
     image: pgvector/pgvector:pg16
@@ -16,12 +21,17 @@ services:
       retries: 10
 
   api:
-    build: ./backend
+    build:
+      context: ./backend
+      target: prod          # dev override flips this to the dev stage
     ports:
-      - "8000:8000"
+      - "8010:8000"   # host 8010 -> container 8000 (8000 is used by another project)
+    # LLM + Tavily keys come from the root .env. DATABASE_URL in there is for the
+    # host venv; the `environment` block below overrides it (env wins over env_file)
+    # so the container reaches Postgres by its compose service name.
+    env_file:
+      - .env
     environment:
-      # Inside the compose network the api reaches Postgres by the service name "db"
-      # on its real port 5432 (not the host-published 5433).
       DATABASE_URL: postgresql+psycopg://storygen:storygen@db:5432/storygen
     depends_on:
       db:
